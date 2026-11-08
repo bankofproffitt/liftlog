@@ -117,13 +117,39 @@ button:disabled { opacity: 0.5; cursor: default; }
 
 /* Live logging */
 .sets { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid var(--line); }
-.sets li { display: grid; grid-template-columns: 2.2em 1fr auto auto; gap: 10px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
-.sets .n { font-family: var(--font-display); font-weight: 600; color: var(--muted); }
-.sets .wr { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
-.sets .rir, .sets .rs { font-size: 0.85rem; color: var(--muted); }
-.sets li.hit .n { color: var(--good); }
-.sets li.miss .n { color: var(--bad); }
-.sets li.wu { opacity: 0.7; }
+.sets > li { border-bottom: 1px solid var(--line); }
+.setrow { width: 100%; display: grid; grid-template-columns: 2.2em 1fr auto auto auto; gap: 10px; align-items: baseline; padding: 9px 2px; background: none; border: 0; text-align: left; font-variant-numeric: tabular-nums; min-height: 44px; }
+.setrow:hover { background: var(--accent-soft); }
+.setrow .n { font-family: var(--font-display); font-weight: 600; color: var(--muted); }
+.setrow .wr { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
+.setrow .rir, .setrow .rs { font-size: 0.85rem; color: var(--muted); }
+.setrow .pen { font-size: 0.78rem; color: var(--accent); font-weight: 600; }
+.setrow.hit .n { color: var(--good); }
+.setrow.miss .n { color: var(--bad); }
+.setrow.wu { opacity: 0.75; }
+.editrow { background: var(--accent-soft); margin-inline: -16px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+.edactions { grid-column: 1 / -1; display: flex; gap: 8px; flex-wrap: wrap; }
+.edactions button { flex: 1 1 auto; }
+.warmups { display: flex; flex-direction: column; gap: 6px; }
+.wchips { display: flex; flex-wrap: wrap; gap: 6px; }
+.wchip { border: 1px dashed var(--muted); background: var(--bg); border-radius: 8px; padding: 8px 12px; min-height: 40px; font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+.wchip.done { border-style: solid; border-color: var(--good); color: var(--good); background: transparent; opacity: 1; }
+.wline { font-family: var(--font-display); font-size: 0.98rem; color: var(--muted); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+.recov { border-radius: var(--r); padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--line); background: var(--surface); }
+.recov.ok { border-color: color-mix(in srgb, var(--good) 45%, var(--line)); }
+.recov.ok strong { color: var(--good); }
+.recov.wait { border-color: color-mix(in srgb, var(--warn) 45%, var(--line)); }
+.recov.wait strong { color: var(--warn); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.row2 input, .actform input { width: 100%; }
+.seg.seg3 { grid-template-columns: repeat(3, 1fr); }
+.seg.seg3 button { font-family: var(--font-body); font-weight: 600; font-size: 0.95rem; }
+.actform .field { font-size: 0.82rem; color: var(--muted); font-weight: 500; }
+.actform textarea, .history textarea { color: var(--ink); }
+.history .field { font-size: 0.82rem; color: var(--muted); font-weight: 500; }
+.session .tools { display: flex; gap: 16px; }
+.session .tools .link { font-size: 0.9rem; color: var(--accent); min-height: 32px; display: inline-flex; align-items: center; }
+.session.act pre { color: var(--muted); }
 .entry { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: end; margin-top: 4px; }
 .field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .field > label, .flabel { font-size: 0.82rem; color: var(--muted); font-weight: 500; }
@@ -182,9 +208,11 @@ button:disabled { opacity: 0.5; cursor: default; }
 .switch { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-weight: 500; }
 .switch input { width: 18px; height: 18px; accent-color: var(--accent); }
 
-.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(110px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 999px; font-size: 0.92rem; z-index: 20; max-width: calc(100% - 32px); }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(110px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 8px 8px 8px 16px; border-radius: 999px; font-size: 0.92rem; z-index: 20; max-width: calc(100% - 32px); display: flex; align-items: center; gap: 12px; }
+.toast:not(:has(button)) { padding-right: 16px; }
+.toast button { background: var(--bg); color: var(--ink); border: 0; border-radius: 999px; padding: 6px 14px; font-weight: 600; min-height: 36px; }
 
-@media (max-width: 380px) { .opts { grid-template-columns: 1fr; } .dayhead h2 { font-size: 2.2rem; } }
+@media (max-width: 380px) { .opts, .row2 { grid-template-columns: 1fr; } .dayhead h2 { font-size: 2.2rem; } }
 @media (prefers-reduced-motion: reduce) { .restmeter div { transition: none; } }
 </style>
 
@@ -200,9 +228,9 @@ button:disabled { opacity: 0.5; cursor: default; }
 const EXERCISES = {
   squat:       { id: "squat",       name: "Back Squat",     short: "Squat",       category: "core",  incrementLb: 5,  rest: [180, 300] },
   bench:       { id: "bench",       name: "Bench Press",    short: "Bench",       category: "core",  incrementLb: 5,  rest: [180, 300] },
-  deadlift:    { id: "deadlift",    name: "Deadlift",       short: "Deadlift",    category: "core",  incrementLb: 10, rest: [180, 300] },
+  deadlift:    { id: "deadlift",    name: "Deadlift",       short: "Deadlift",    category: "core",  incrementLb: 10, rest: [180, 300], floor: true },
   ohp:         { id: "ohp",         name: "Overhead Press", short: "Press",       category: "core",  incrementLb: 5,  rest: [180, 300] },
-  power_clean: { id: "power_clean", name: "Power Clean",    short: "Clean",       category: "power", incrementLb: 5,  rest: [180, 300] },
+  power_clean: { id: "power_clean", name: "Power Clean",    short: "Clean",       category: "power", incrementLb: 5,  rest: [180, 300], floor: true },
   // Not in the default programs yet; chosen for Highland Games carryover.
   push_press:  { id: "push_press",  name: "Push Press",     short: "Push Press",  category: "power", incrementLb: 5,  rest: [180, 300] },
   front_squat: { id: "front_squat", name: "Front Squat",    short: "Front Squat", category: "core",  incrementLb: 5,  rest: [180, 300] },
@@ -230,6 +258,9 @@ const DEFAULT_SETTINGS = {
 // set:     { weight, reps, targetReps, rir|null, warmup, startedAt|null, completedAt }  (times in ms)
 // entry:   { exerciseId, sets: [set] }
 // workout: { id, dayName, startedAt, endedAt|null, unit, entries: [entry], notes }
+
+// Sessions are lifting workouts unless kind === "activity" (cardio, throwing practice, sport...).
+const isLift = (w) => !w.kind || w.kind === "lift";
 
 const workingSets = (entry) => entry.sets.filter((s) => !s.warmup);
 const hitTarget = (s) => s.reps >= s.targetReps;
@@ -454,6 +485,80 @@ function platesPerSide(total, bar = 45, smallestJump = 5) {
   return Math.abs(side) < 1e-9 ? out : null;
 }
 
+// ---------- Warm-ups ----------
+
+/** Suggested warm-up sets ramping to the working weight.
+ *  Bar lifts: empty bar 2×5, then about 40/60/80%. Floor lifts (deadlift, clean) start at 135
+ *  when the work weight allows, since the bar needs 45 lb plates to sit at the right height.
+ *  Power lifts use fewer reps so warm-ups don't tire you before the fast work. Steps closer
+ *  than ~8% of the work weight are skipped. */
+function warmupSets(ex, work, bar = 45, step = 5) {
+  if (!work || work <= bar) return [];
+  const power = ex.category === "power";
+  const start = ex.floor && work >= 155 ? 135 : bar;
+  const firstReps = power ? 3 : 5;
+  const out = [{ weight: start, reps: firstReps }];
+  if (start === bar) out.push({ weight: bar, reps: firstReps });
+  const ramp = power ? [[0.5, 3], [0.7, 2], [0.85, 1]] : [[0.4, 5], [0.6, 3], [0.8, 2]];
+  const gap = Math.max(2 * step, work * 0.08);
+  for (const [pct, reps] of ramp) {
+    const w = roundToPlates(work * pct, step);
+    const prev = out[out.length - 1].weight;
+    if (w - prev < gap || work - w < gap) continue;
+    out.push({ weight: w, reps });
+  }
+  return out;
+}
+
+// ---------- Recovery between sessions ----------
+
+const HOUR = 3_600_000;
+
+/** When the next lifting session is due. Full-body sessions sit about 48 h apart
+ *  (every other day, ACSM's 2-3 sessions a week for novices). A hard last session
+ *  (missed reps or a 0-RIR grinder) gets up to 72 h. Hard cardio since then gets a note,
+ *  because heavy endurance work close to lifting can blunt strength and power. */
+function recovery(history, now = Date.now()) {
+  const lifts = history.filter(isLift).sort((a, b) => b.startedAt - a.startedAt);
+  const last = lifts[0];
+  if (!last) return null;
+  const end = last.endedAt ?? last.startedAt;
+  const hard = last.entries.some((e) => workingSets(e).some((s) => !hitTarget(s) || s.rir === 0));
+  const hours = hard ? 72 : 48;
+  const readyAt = end + hours * HOUR;
+  const hardCardio = history.some((w) => !isLift(w) && ENDURANCE.has(w.activity?.type) && w.activity?.effort === "hard" &&
+    (w.endedAt ?? w.startedAt) > end && now - (w.endedAt ?? w.startedAt) < 24 * HOUR);
+  const reason = hard
+    ? "Your last session had missed reps or a 0-RIR grinder, so allow up to 72 h before the next one."
+    : "Full-body sessions work best about 48 h apart, which matches your every-other-day plan.";
+  return {
+    lastEnd: end, readyAt, hours, hard, hardCardio,
+    ready: now >= readyAt,
+    hoursSince: (now - end) / HOUR,
+    hoursLeft: Math.max(0, (readyAt - now) / HOUR),
+    reason,
+  };
+}
+
+// ---------- Activities (cardio and other training) ----------
+
+const ACTIVITY_TYPES = {
+  run: "Run", bike: "Bike", row: "Row", walk: "Walk", swim: "Swim",
+  throws: "Throwing practice", sport: "Sport", other: "Other",
+};
+
+/** Endurance types: the ones that can interfere with strength and power when hard. */
+const ENDURANCE = new Set(["run", "bike", "row", "walk", "swim"]);
+
+function activityLine(w) {
+  const a = w.activity ?? {};
+  const parts = [ACTIVITY_TYPES[a.type] ?? "Activity"];
+  if (a.minutes) parts.push(`${a.minutes} min`);
+  if (a.distance) parts.push(`${fmt(Number(a.distance))} ${a.distanceUnit || "mi"}`);
+  if (a.effort) parts.push(a.effort);
+  return parts.join(" · ");
+}
+
 // ---------- Summary ----------
 
 const fmt = (w) => (Number.isInteger(w) ? String(w) : w.toFixed(1));
@@ -475,6 +580,9 @@ function status(entry) {
 
 /** Plain-text summary for the SMS composer. The user reviews it and taps Send. */
 function summaryText(workout, nextUp = []) {
+  if (!isLift(workout)) {
+    return [`🏃 ${activityLine(workout)}`, workout.notes].filter(Boolean).join("\n");
+  }
   const unit = workout.unit;
   const lines = [];
   let header = workout.dayName ? `💪 Workout ${workout.dayName}` : "💪 Workout";
@@ -508,14 +616,24 @@ const store = {
 const state = {
   settings: { ...DEFAULT_SETTINGS, ...store.load(KEY.settings, {}) },
   history: store.load(KEY.history, []),
-  active: store.load(KEY.active, null),
+  active: (() => {
+    const a = store.load(KEY.active, null);   // fill fields added after version 1
+    if (a) { a.warmDone ??= {}; a.restWarm ??= false; a.kind ??= "lift"; }
+    return a;
+  })(),
   view: "today",
-  startWeights: {},     // exerciseId -> chosen starting weight for first sessions
-  freestyle: [],        // exerciseIds picked in freestyle mode
-  finished: null,       // workout just finished, awaiting save
+  startWeights: {},      // exerciseId -> chosen starting weight for first sessions
+  freestyle: [],         // exerciseIds picked in freestyle mode
+  finished: null,        // workout or activity just finished, awaiting save
   confirmDiscard: false,
   restoreOpen: false,
-  toast: "",
+  editing: null,         // { scope: "active" | workoutId, exerciseId, index }
+  editDraft: null,       // { weight, reps, rir, warmup }
+  sessionOpen: null,     // workout id being edited in History
+  confirmDeleteSession: false,
+  activityForm: null,    // { type, minutes, distance, effort, notes }
+  addExerciseOpen: false,
+  toast: null,           // { msg, action, label }
 };
 
 const persist = () => {
@@ -526,58 +644,78 @@ const persist = () => {
 
 // ---------- Helpers ----------
 const $ = (sel) => document.querySelector(sel);
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const clock = (sec) => {
   sec = Math.max(0, Math.floor(sec));
   const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
   return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(s).padStart(2, "0");
 };
 const dateLabel = (ms) => new Date(ms).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+const timeLabel = (ms) => new Date(ms).toLocaleString(undefined, { weekday: "short", hour: "numeric", minute: "2-digit" });
+const hoursLabel = (h) => (h < 1 ? "under an hour" : Math.round(h) + " h");
 const program = () => recommendProgram(state.settings.goal, state.settings.trainingAge);
-const realHistory = () => state.history;
 const unit = () => state.settings.unit;
+const bar = () => state.settings.barWeight;
+const step = () => state.settings.smallestJump;
+const getWorkout = (scope) => (scope === "active" ? state.active : state.history.find((w) => w.id === scope));
+const getEntry = (scope, exerciseId) => getWorkout(scope)?.entries.find((e) => e.exerciseId === exerciseId);
+const weightLabel = (w) => (w === bar() ? "Bar" : fmt(w));
 
-function toast(msg) {
-  state.toast = msg;
-  const t = $("#toast");
-  if (t) { t.textContent = msg; t.hidden = false; }
+function toast(msg, action = null, label = "Undo") {
+  state.toast = { msg, action, label };
+  renderToast();
   clearTimeout(toast.timer);
-  toast.timer = setTimeout(() => { state.toast = ""; const el = $("#toast"); if (el) el.hidden = true; }, 2400);
+  toast.timer = setTimeout(() => { state.toast = null; renderToast(); }, action ? 6000 : 2400);
+}
+function renderToast() {
+  const t = $("#toast");
+  if (!t) return;
+  const tt = state.toast;
+  t.hidden = !tt;
+  t.innerHTML = tt ? `<span>${esc(tt.msg)}</span>${tt.action ? `<button data-action="toast-action">${esc(tt.label)}</button>` : ""}` : "";
 }
 
 function plateLine(weight) {
-  const plates = platesPerSide(weight, state.settings.barWeight, state.settings.smallestJump);
   if (!weight) return "";
-  if (weight === state.settings.barWeight) return "Empty bar";
-  if (!plates) return "";
-  return "Per side: " + plates.map(fmt).join(" · ");
+  if (weight === bar()) return "Empty bar";
+  const plates = platesPerSide(weight, bar(), step());
+  return plates ? "Per side: " + plates.map(fmt).join(" · ") : "";
+}
+
+function warmupLine(ex, weight) {
+  const wu = warmupSets(ex, weight, bar(), step());
+  if (!wu.length) return "";
+  return "Warm-up: " + wu.map((s) => `${weightLabel(s.weight)}×${s.reps}`).join(" · ");
 }
 
 /** Slots for today: from the program, or the freestyle picks. */
+const defaultSlot = (id) => ({
+  exerciseId: id,
+  sets: EXERCISES[id].category === "power" ? 5 : 3,
+  reps: EXERCISES[id].category === "power" ? 3 : 5,
+});
 function todaySlots() {
   if (state.settings.followProgram) {
-    const day = nextDay(program(), realHistory());
+    const day = nextDay(program(), state.history);
     return { dayName: day.name, slots: day.slots.filter((s) => EXERCISES[s.exerciseId]) };
   }
-  return {
-    dayName: "",
-    slots: state.freestyle.map((id) => ({
-      exerciseId: id, sets: EXERCISES[id].category === "power" ? 5 : 3, reps: EXERCISES[id].category === "power" ? 3 : 5,
-    })),
-  };
+  return { dayName: "", slots: state.freestyle.map(defaultSlot) };
 }
 
 // ---------- Workout actions ----------
+function planFor(sl) {
+  const p = prescribe(EXERCISES[sl.exerciseId], sl, state.history, state.settings);
+  if (p.weight === 0) p.weight = Number(state.startWeights[sl.exerciseId]) || bar();
+  return p;
+}
+
 function startWorkout() {
   const { dayName, slots } = todaySlots();
   if (!slots.length) { toast("Add at least one exercise first"); return; }
-  const plan = slots.map((sl) => {
-    const p = prescribe(EXERCISES[sl.exerciseId], sl, realHistory(), state.settings);
-    if (p.weight === 0) p.weight = Number(state.startWeights[sl.exerciseId]) || state.settings.barWeight;
-    return p;
-  });
+  const plan = slots.map(planFor);
   state.active = {
     id: "w" + Date.now(),
+    kind: "lift",
     dayName,
     startedAt: Date.now(),
     endedAt: null,
@@ -585,8 +723,10 @@ function startWorkout() {
     plan,
     entries: plan.map((p) => ({ exerciseId: p.exerciseId, sets: [] })),
     drafts: Object.fromEntries(plan.map((p) => [p.exerciseId, { weight: p.weight, reps: p.reps, rir: 2, warmup: false }])),
-    restStart: null,     // ms when the last set was logged
+    warmDone: {},
+    restStart: null,
     restExercise: null,
+    restWarm: false,
     nextSetStartedAt: null,
     notes: "",
   };
@@ -595,53 +735,148 @@ function startWorkout() {
   render();
 }
 
+function addExercise(id) {
+  const a = state.active;
+  if (a.plan.some((p) => p.exerciseId === id)) return;
+  const p = planFor(defaultSlot(id));
+  a.plan.push(p);
+  a.entries.push({ exerciseId: id, sets: [] });
+  a.drafts[id] = { weight: p.weight, reps: p.reps, rir: 2, warmup: false };
+  state.addExerciseOpen = false;
+  persist();
+  render();
+}
+
+function pushSet(exerciseId, set, warm) {
+  const a = state.active;
+  const entry = a.entries.find((e) => e.exerciseId === exerciseId);
+  entry.sets.push(set);
+  const index = entry.sets.length - 1;
+  a.restStart = set.completedAt;
+  a.restExercise = exerciseId;
+  a.restWarm = warm;
+  a.nextSetStartedAt = null;
+  persist();
+  render();
+  toast(warm ? "Warm-up logged" : "Set logged", () => deleteSet("active", exerciseId, index), "Undo");
+}
+
 function logSet(exerciseId) {
   const a = state.active;
   const d = a.drafts[exerciseId];
   const plan = a.plan.find((p) => p.exerciseId === exerciseId);
-  const entry = a.entries.find((e) => e.exerciseId === exerciseId);
-  const now = Date.now();
-  entry.sets.push({
+  pushSet(exerciseId, {
     weight: Number(d.weight) || 0,
     reps: Number(d.reps) || 0,
     targetReps: plan.reps,
     rir: d.warmup ? null : d.rir,
     warmup: d.warmup,
     startedAt: a.nextSetStartedAt,
-    completedAt: now,
-  });
-  a.restStart = now;
-  a.restExercise = exerciseId;
-  a.nextSetStartedAt = null;
-  if (d.warmup) d.warmup = false;
+    completedAt: Date.now(),
+  }, d.warmup);
+  if (d.warmup) { d.warmup = false; persist(); render(); }
+}
+
+function logWarmup(exerciseId, i) {
+  const a = state.active;
+  const plan = a.plan.find((p) => p.exerciseId === exerciseId);
+  const wu = warmupSets(EXERCISES[exerciseId], plan.weight, bar(), step())[i];
+  if (!wu) return;
+  a.warmDone ??= {};
+  a.warmDone[exerciseId] = [...(a.warmDone[exerciseId] ?? []), i];
+  pushSet(exerciseId, {
+    weight: wu.weight, reps: wu.reps, targetReps: wu.reps, rir: null, warmup: true, wi: i,
+    startedAt: a.nextSetStartedAt, completedAt: Date.now(),
+  }, true);
+}
+
+function deleteSet(scope, exerciseId, index) {
+  const w = getWorkout(scope);
+  const entry = getEntry(scope, exerciseId);
+  if (!w || !entry || !entry.sets[index]) return;
+  const [removed] = entry.sets.splice(index, 1);
+  if (scope === "active") {
+    if (removed.warmup && removed.wi !== undefined) {
+      w.warmDone[exerciseId] = (w.warmDone[exerciseId] ?? []).filter((x) => x !== removed.wi);
+    }
+    // If the removed set started the current rest, fall back to the previous set (or no rest).
+    if (w.restStart === removed.completedAt) {
+      const all = w.entries.flatMap((e) => e.sets.map((s) => ({ s, id: e.exerciseId })))
+        .sort((x, y) => y.s.completedAt - x.s.completedAt);
+      w.restStart = all[0]?.s.completedAt ?? null;
+      w.restExercise = all[0]?.id ?? null;
+      w.restWarm = all[0]?.s.warmup ?? false;
+    }
+  } else {
+    w.entries = w.entries.filter((e) => e.sets.length);
+  }
+  state.editing = null;
   persist();
   render();
+}
+
+function openEditor(scope, exerciseId, index) {
+  const s = getEntry(scope, exerciseId)?.sets[index];
+  if (!s) return;
+  state.editing = { scope, exerciseId, index };
+  state.editDraft = { weight: s.weight, reps: s.reps, rir: s.rir ?? 2, warmup: s.warmup };
+  render();
+}
+
+function saveEdit() {
+  const { scope, exerciseId, index } = state.editing;
+  const s = getEntry(scope, exerciseId)?.sets[index];
+  const d = state.editDraft;
+  if (s) {
+    s.weight = Number(d.weight) || 0;
+    s.reps = Number(d.reps) || 0;
+    s.warmup = d.warmup;
+    s.rir = d.warmup ? null : d.rir;
+  }
+  state.editing = null;
+  persist();
+  render();
+  toast("Set updated");
 }
 
 function finishWorkout() {
   const a = state.active;
   const workout = {
-    id: a.id, dayName: a.dayName, startedAt: a.startedAt, endedAt: Date.now(), unit: a.unit,
+    id: a.id, kind: "lift", dayName: a.dayName, startedAt: a.startedAt, endedAt: Date.now(), unit: a.unit,
     entries: a.entries.filter((e) => e.sets.length), notes: a.notes,
   };
-  if (!workout.entries.length) { toast("Log at least one set before finishing"); return; }
+  if (!workout.entries.some((e) => workingSets(e).length)) { toast("Log at least one work set before finishing"); return; }
+  state.editing = null;
   state.finished = workout;
   render();
 }
 
 function saveFinished() {
-  state.history.push(state.finished);
+  const w = state.finished;
+  state.history.push(w);
   state.finished = null;
-  state.active = null;
+  if (isLift(w)) { state.active = null; releaseWakeLock(); }
   persist();
-  releaseWakeLock();
-  toast("Workout saved");
+  toast(isLift(w) ? "Workout saved" : "Activity saved");
+  render();
+}
+
+function saveActivity() {
+  const f = state.activityForm;
+  const minutes = Number(f.minutes) || 0;
+  if (!minutes) { toast("Enter how many minutes"); return; }
+  const now = Date.now();
+  state.finished = {
+    id: "a" + now, kind: "activity", dayName: "", startedAt: now - minutes * 60_000, endedAt: now, unit: unit(),
+    entries: [], notes: (f.notes || "").trim(),
+    activity: { type: f.type, minutes, distance: Number(f.distance) || null, distanceUnit: "mi", effort: f.effort },
+  };
+  state.activityForm = null;
   render();
 }
 
 function nextUpAfter(history) {
-  const prog = program();
-  const day = nextDay(prog, history);
+  const day = nextDay(program(), history);
   return day.slots.map((sl) => prescribe(EXERCISES[sl.exerciseId], sl, history, state.settings));
 }
 
@@ -655,15 +890,91 @@ document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible" && state.active) requestWakeLock();
 });
 
+// ---------- Shared pieces ----------
+const stepper = (id, label, value, action, field, delta, mode = "decimal") => `
+  <div class="field">
+    <label for="${id}">${label}</label>
+    <div class="stepper">
+      <button data-action="${action}-step" data-field="${field}" data-delta="-${delta}" aria-label="Less ${label.toLowerCase()}">−</button>
+      <input id="${id}" type="number" inputmode="${mode}" step="${delta}" min="0" value="${esc(value)}" data-action="${action}-field" data-field="${field}">
+      <button data-action="${action}-step" data-field="${field}" data-delta="${delta}" aria-label="More ${label.toLowerCase()}">+</button>
+    </div>
+  </div>`;
+
+/** The stepper/RIR/warm-up controls; `action` prefixes the data-actions so one renderer
+ *  serves both the live entry row and the set editor. */
+function setControls(prefix, d, action, extraAttrs = "") {
+  return `
+    ${stepper(`${prefix}-w`, "Weight", d.weight, action, "weight", step()).replace(/data-field=/g, `${extraAttrs} data-field=`)}
+    ${stepper(`${prefix}-r`, "Reps", d.reps, action, "reps", 1, "numeric").replace(/data-field=/g, `${extraAttrs} data-field=`)}
+    <div class="field rirfield">
+      <span class="flabel" id="${prefix}-rirl">Reps left in the tank</span>
+      <div class="seg" role="radiogroup" aria-labelledby="${prefix}-rirl">
+        ${[0, 1, 2, 3, 4].map((v) => `<button role="radio" aria-checked="${d.rir === v && !d.warmup}" class="${d.rir === v && !d.warmup ? "on" : ""}" data-action="${action}-rir" ${extraAttrs} data-v="${v}" ${d.warmup ? "disabled" : ""}>${v === 4 ? "4+" : v}</button>`).join("")}
+      </div>
+    </div>
+    <label class="wu-toggle" for="${prefix}-wu"><input id="${prefix}-wu" type="checkbox" ${d.warmup ? "checked" : ""} data-action="${action}-warmup" ${extraAttrs}> Warm-up set</label>`;
+}
+
+function setList(scope, entry) {
+  if (!entry.sets.length) return "";
+  const rests = restIntervals(entry);
+  let workNo = 0;
+  const rows = entry.sets.map((s, i) => {
+    if (!s.warmup) workNo++;
+    const ed = state.editing;
+    if (ed && ed.scope === scope && ed.exerciseId === entry.exerciseId && ed.index === i) {
+      return `
+        <li class="editrow">
+          <p class="label">Edit ${s.warmup ? "warm-up" : "set " + workNo}</p>
+          <div class="entry">
+            ${setControls("ed", state.editDraft, "ed")}
+            <div class="edactions">
+              <button class="primary" data-action="ed-save">Save</button>
+              <button class="danger" data-action="ed-delete">Delete set</button>
+              <button class="ghost" data-action="ed-cancel">Cancel</button>
+            </div>
+          </div>
+        </li>`;
+    }
+    return `
+      <li>
+        <button class="setrow ${s.warmup ? "wu" : hitTarget(s) ? "hit" : "miss"}" data-action="edit-set" data-scope="${esc(scope)}" data-id="${entry.exerciseId}" data-i="${i}" aria-label="Edit this set">
+          <span class="n">${s.warmup ? "WU" : workNo}</span>
+          <span class="wr">${weightLabel(s.weight)} × ${s.reps}</span>
+          <span class="rir">${s.rir === null || s.rir === undefined ? "" : "RIR " + s.rir}</span>
+          <span class="rs">${i > 0 ? "rest " + clock(rests[i - 1]) : ""}</span>
+          <span class="pen" aria-hidden="true">Edit</span>
+        </button>
+      </li>`;
+  }).join("");
+  return `<ol class="sets">${rows}</ol>`;
+}
+
+function recoveryBanner() {
+  const r = recovery(state.history);
+  if (!r) return "";
+  const head = r.ready
+    ? `<strong>Ready to lift.</strong> ${hoursLabel(r.hoursSince)} since your last session.`
+    : `<strong>Recovering.</strong> Ready around ${esc(timeLabel(r.readyAt))} (in ${hoursLabel(r.hoursLeft)}).`;
+  return `
+    <div class="recov ${r.ready ? "ok" : "wait"}" role="status">
+      <p>${head}</p>
+      <p class="note">${esc(r.reason)}</p>
+      ${r.hardCardio ? `<p class="note">You logged hard cardio since then. Hard endurance work close to lifting can blunt strength and power, so keep cardio easy on lifting days or put it on rest days.</p>` : ""}
+    </div>`;
+}
+
 // ---------- Views ----------
 function viewToday() {
   if (state.finished) return viewFinished();
   if (state.active) return viewActive();
+  if (state.activityForm) return viewActivityForm();
 
   const prog = program();
   const { dayName, slots } = todaySlots();
-  const history = realHistory();
-  const last = history.length ? [...history].sort((a, b) => b.startedAt - a.startedAt)[0] : null;
+  const lifts = state.history.filter(isLift);
+  const last = lifts.length ? [...lifts].sort((a, b) => b.startedAt - a.startedAt)[0] : null;
 
   const freestylePicker = state.settings.followProgram ? "" : `
     <div class="picker">
@@ -676,7 +987,7 @@ function viewToday() {
 
   const cards = slots.map((sl) => {
     const ex = EXERCISES[sl.exerciseId];
-    const p = prescribe(ex, sl, history, state.settings);
+    const p = prescribe(ex, sl, state.history, state.settings);
     const first = p.flags.includes("firstSession");
     const flagPills = p.flags.filter((f) => f !== "firstSession").map((f) => ({
       deload: `<span class="pill warn">Deload</span>`,
@@ -684,10 +995,11 @@ function viewToday() {
     }[f])).join("");
     const weightBlock = first
       ? `<label class="startw" for="sw-${ex.id}">Starting weight
-           <span class="inline-input"><input id="sw-${ex.id}" type="number" inputmode="decimal" step="${state.settings.smallestJump}" min="0"
-             placeholder="${state.settings.barWeight}" value="${esc(state.startWeights[ex.id] ?? "")}" data-action="start-weight" data-id="${ex.id}"> ${unit()}</span></label>`
+           <span class="inline-input"><input id="sw-${ex.id}" type="number" inputmode="decimal" step="${step()}" min="0"
+             placeholder="${bar()}" value="${esc(state.startWeights[ex.id] ?? "")}" data-action="start-weight" data-id="${ex.id}"> ${unit()}</span></label>`
       : `<div class="target"><span class="big">${fmt(p.weight)}</span><span class="unit">${unit()}</span></div>
          <div class="plates">${esc(plateLine(p.weight))}</div>`;
+    const wl = first ? "" : warmupLine(ex, p.weight);
     return `
       <article class="lift">
         <header>
@@ -697,6 +1009,7 @@ function viewToday() {
           ${ex.category === "power" ? `<span class="pill">Power</span>` : ""}
         </header>
         ${weightBlock}
+        ${wl ? `<p class="wline">${esc(wl)}</p>` : ""}
         <p class="why">${esc(p.rationale)}</p>
         <p class="rest">Rest ${clock(ex.rest[0])}–${clock(ex.rest[1])} between work sets</p>
       </article>`;
@@ -704,16 +1017,18 @@ function viewToday() {
 
   return `
     <section class="today">
+      ${recoveryBanner()}
       <div class="dayhead">
         <div>
           <p class="label">${state.settings.followProgram ? esc(prog.name) : "Freestyle"}</p>
           <h2>${dayName ? "Day " + esc(dayName) : "Today"}</h2>
         </div>
-        <p class="meta">${last ? "Last session " + dateLabel(last.startedAt) : "No sessions logged yet"}</p>
+        <p class="meta">${last ? "Last lift " + dateLabel(last.startedAt) : "No sessions logged yet"}</p>
       </div>
       ${freestylePicker}
       <div class="lifts">${cards || `<p class="empty">Pick at least one lift above.</p>`}</div>
       <button class="primary wide" data-action="start">Start workout</button>
+      <button class="ghost wide" data-action="activity-open">Log cardio or other training</button>
     </section>`;
 }
 
@@ -721,19 +1036,20 @@ function viewActive() {
   const a = state.active;
   const cards = a.plan.map((p) => {
     const ex = EXERCISES[p.exerciseId];
-    const entry = a.entries.find((e) => e.exerciseId === p.exerciseId);
-    const d = a.drafts[p.exerciseId];
-    const work = entry.sets.filter((s) => !s.warmup).length;
-    const done = work >= p.sets;
-    const rests = restIntervals(entry);
-    const rows = entry.sets.map((s, i) => `
-      <li class="${s.warmup ? "wu" : hitTarget(s) ? "hit" : "miss"}">
-        <span class="n">${s.warmup ? "WU" : entry.sets.slice(0, i + 1).filter((x) => !x.warmup).length}</span>
-        <span class="wr">${fmt(s.weight)} × ${s.reps}</span>
-        <span class="rir">${s.rir === null ? "" : "RIR " + s.rir}</span>
-        <span class="rs">${i > 0 ? "rest " + clock(rests[i - 1]) : ""}</span>
-      </li>`).join("");
     const id = p.exerciseId;
+    const entry = a.entries.find((e) => e.exerciseId === id);
+    const d = a.drafts[id];
+    const work = workingSets(entry).length;
+    const done = work >= p.sets;
+    const wu = warmupSets(ex, p.weight, bar(), step());
+    const wDone = a.warmDone?.[id] ?? [];
+    const warmBlock = wu.length && work === 0 ? `
+      <div class="warmups">
+        <span class="flabel">Suggested warm-up · tap each set as you finish it</span>
+        <div class="wchips">
+          ${wu.map((s, i) => `<button class="wchip ${wDone.includes(i) ? "done" : ""}" data-action="log-warm" data-id="${id}" data-i="${i}" ${wDone.includes(i) ? "disabled" : ""}>${weightLabel(s.weight)}×${s.reps}${wDone.includes(i) ? " ✓" : ""}</button>`).join("")}
+        </div>
+      </div>` : "";
     return `
       <article class="lift live ${done ? "done" : ""}">
         <header>
@@ -741,35 +1057,25 @@ function viewActive() {
           <span class="scheme">${p.sets}×${p.reps} @ ${fmt(p.weight)}</span>
           <span class="count">${Math.min(work, p.sets)}/${p.sets}</span>
         </header>
-        ${rows ? `<ol class="sets">${rows}</ol>` : ""}
+        <div class="plates">${esc(plateLine(p.weight))}</div>
+        ${warmBlock}
+        ${setList("active", entry)}
         <div class="entry">
-          <div class="field">
-            <label for="w-${id}">Weight</label>
-            <div class="stepper">
-              <button data-action="step" data-id="${id}" data-field="weight" data-delta="-${state.settings.smallestJump}" aria-label="Less weight">−</button>
-              <input id="w-${id}" type="number" inputmode="decimal" step="${state.settings.smallestJump}" value="${esc(d.weight)}" data-action="draft" data-id="${id}" data-field="weight">
-              <button data-action="step" data-id="${id}" data-field="weight" data-delta="${state.settings.smallestJump}" aria-label="More weight">+</button>
-            </div>
-          </div>
-          <div class="field">
-            <label for="r-${id}">Reps</label>
-            <div class="stepper">
-              <button data-action="step" data-id="${id}" data-field="reps" data-delta="-1" aria-label="Fewer reps">−</button>
-              <input id="r-${id}" type="number" inputmode="numeric" step="1" min="0" value="${esc(d.reps)}" data-action="draft" data-id="${id}" data-field="reps">
-              <button data-action="step" data-id="${id}" data-field="reps" data-delta="1" aria-label="More reps">+</button>
-            </div>
-          </div>
-          <div class="field rirfield">
-            <span class="flabel" id="rir-${id}">Reps left in the tank</span>
-            <div class="seg" role="radiogroup" aria-labelledby="rir-${id}">
-              ${[0, 1, 2, 3, 4].map((v) => `<button role="radio" aria-checked="${d.rir === v && !d.warmup}" class="${d.rir === v && !d.warmup ? "on" : ""}" data-action="rir" data-id="${id}" data-v="${v}" ${d.warmup ? "disabled" : ""}>${v === 4 ? "4+" : v}</button>`).join("")}
-            </div>
-          </div>
-          <label class="wu-toggle" for="wu-${id}"><input id="wu-${id}" type="checkbox" ${d.warmup ? "checked" : ""} data-action="warmup" data-id="${id}"> Warm-up set</label>
+          ${setControls("e-" + id, d, "draft", `data-id="${id}"`)}
           <button class="primary" data-action="log" data-id="${id}">Log set</button>
         </div>
       </article>`;
   }).join("");
+
+  const others = Object.values(EXERCISES).filter((ex) => !a.plan.some((p) => p.exerciseId === ex.id));
+  const addBlock = state.addExerciseOpen ? `
+    <div class="picker">
+      <p class="label">Add a lift to this workout</p>
+      <div class="chips">
+        ${others.map((ex) => `<button class="chip" data-action="add-ex" data-id="${ex.id}">${esc(ex.name)}</button>`).join("")}
+        <button class="chip" data-action="add-ex-close">Cancel</button>
+      </div>
+    </div>` : others.length ? `<button class="ghost wide" data-action="add-ex-open">+ Add a lift</button>` : "";
 
   const restEx = a.restExercise ? EXERCISES[a.restExercise] : null;
   return `
@@ -781,7 +1087,9 @@ function viewActive() {
         </div>
         <button class="ghost" data-action="finish">Finish</button>
       </div>
+      <p class="note">Tap any logged set to fix or delete it.</p>
       <div class="lifts">${cards}</div>
+      ${addBlock}
       <div class="discard">
         ${state.confirmDiscard
           ? `<span>Discard this workout? Logged sets will be lost.</span>
@@ -792,31 +1100,67 @@ function viewActive() {
     </section>
     <div class="restbar" id="restbar" ${a.restStart ? "" : "hidden"}>
       <div class="restinfo">
-        <span class="label">Rest${restEx ? " · " + esc(restEx.short) : ""}</span>
+        <span class="label">${a.restWarm ? "Warm-up rest" : "Rest"}${restEx ? " · " + esc(restEx.short) : ""}</span>
         <span class="clock" id="rest-clock">0:00</span>
-        <span class="range" id="rest-range">${restEx ? "target " + clock(restEx.rest[0]) + "–" + clock(restEx.rest[1]) : ""}</span>
+        <span class="range">${a.restWarm ? "move on when ready" : restEx ? "target " + clock(restEx.rest[0]) + "–" + clock(restEx.rest[1]) : ""}</span>
       </div>
       <div class="restmeter"><div id="rest-fill"></div></div>
       <button class="ghost small" data-action="start-set" ${a.nextSetStartedAt ? "disabled" : ""}>${a.nextSetStartedAt ? "Set started" : "Start next set"}</button>
     </div>`;
 }
 
+function viewActivityForm() {
+  const f = state.activityForm;
+  return `
+    <section class="actform">
+      <div class="dayhead"><div><p class="label">Other training</p><h2>Log an activity</h2></div></div>
+      <div class="field">
+        <span class="flabel">Type</span>
+        <div class="chips">
+          ${Object.entries(ACTIVITY_TYPES).map(([k, v]) => `<button class="chip ${f.type === k ? "on" : ""}" aria-pressed="${f.type === k}" data-action="act-type" data-v="${k}">${esc(v)}</button>`).join("")}
+        </div>
+      </div>
+      <div class="row2">
+        <label class="field" for="act-min">Minutes
+          <input id="act-min" type="number" inputmode="numeric" min="1" value="${esc(f.minutes)}" data-action="act-field" data-field="minutes"></label>
+        <label class="field" for="act-dist">Distance (mi, optional)
+          <input id="act-dist" type="number" inputmode="decimal" min="0" step="0.1" value="${esc(f.distance)}" data-action="act-field" data-field="distance"></label>
+      </div>
+      <div class="field">
+        <span class="flabel" id="act-eff">Effort</span>
+        <div class="seg seg3" role="radiogroup" aria-labelledby="act-eff">
+          ${["easy", "moderate", "hard"].map((e) => `<button role="radio" aria-checked="${f.effort === e}" class="${f.effort === e ? "on" : ""}" data-action="act-effort" data-v="${e}">${e[0].toUpperCase() + e.slice(1)}</button>`).join("")}
+        </div>
+      </div>
+      <label class="field" for="act-notes">Notes (optional)
+        <textarea id="act-notes" rows="2" placeholder="e.g. 10 stone throws, 6 caber picks" data-action="act-field" data-field="notes">${esc(f.notes)}</textarea></label>
+      <p class="note">Activities show in History but don't change your lifting rotation. Hard cardio on a lifting day gets flagged on Today.</p>
+      <div class="actions">
+        <button class="primary" data-action="act-save">Save activity</button>
+        <button class="ghost" data-action="act-cancel">Cancel</button>
+      </div>
+    </section>`;
+}
+
+function smsHref(text) { return "sms:?&body=" + encodeURIComponent(text); }
+
 function viewFinished() {
   const w = state.finished;
-  const text = summaryText(w, nextUpAfter([...realHistory(), w]));
-  const href = "sms:?&body=" + encodeURIComponent(text);
+  const lift = isLift(w);
+  const text = summaryText(w, lift ? nextUpAfter([...state.history, w]) : []);
   return `
     <section class="finished">
-      <p class="label">Workout complete</p>
-      <h2>${Math.round(durationSeconds(w) / 60)} min · ${workingSetCount(w)} work sets</h2>
+      <p class="label">${lift ? "Workout complete" : "Activity logged"}</p>
+      <h2>${lift ? `${Math.round(durationSeconds(w) / 60)} min · ${workingSetCount(w)} work sets` : esc(activityLine(w))}</h2>
+      ${lift ? `<p class="note">Spot a mistake? Save it, then fix any set from History → Edit.</p>` : ""}
       <label class="label" for="summary">Summary to send</label>
       <textarea id="summary" readonly rows="${text.split("\n").length + 1}">${esc(text)}</textarea>
       <div class="actions">
-        <a class="primary" href="${href}">Text this workout</a>
+        <a class="primary" href="${smsHref(text)}">Text this ${lift ? "workout" : "activity"}</a>
         <button class="ghost" data-action="copy-summary">Copy text</button>
       </div>
       <p class="note">Messages opens with the text filled in; you choose who gets it and tap Send. If nothing opens, use Copy text.</p>
-      <button class="primary wide" data-action="save">Save workout</button>
+      <button class="primary wide" data-action="save">${lift ? "Save workout" : "Save activity"}</button>
     </section>`;
 }
 
@@ -835,52 +1179,104 @@ function sparkline(points) {
 }
 
 function viewHistory() {
-  const h = [...realHistory()].sort((a, b) => b.startedAt - a.startedAt);
+  if (state.sessionOpen) return viewSession();
+  const h = [...state.history].sort((a, b) => b.startedAt - a.startedAt);
   const hasExamples = h.some((w) => w.example);
   if (!h.length) {
     return `
       <section class="history">
         <div class="emptystate">
           <h2>No workouts yet</h2>
-          <p>Finished workouts appear here with your estimated one-rep max for each lift.</p>
+          <p>Finished workouts and activities appear here, with your estimated one-rep max for each lift.</p>
           <button class="ghost" data-action="load-examples">Load example history</button>
           <p class="note">Example sessions are labeled and can be cleared in Settings.</p>
         </div>
         ${backupBlock()}
       </section>`;
   }
-  const lifts = Object.values(EXERCISES)
-    .map((ex) => ({ ex, trend: e1RMTrend(ex.id, h) }))
-    .filter((x) => x.trend.length);
-  const tiles = lifts.map(({ ex, trend }) => {
-    const latest = trend[trend.length - 1].value;
-    const first = trend[0].value;
-    const delta = latest - first;
-    return `<div class="e1">
-      <span class="label">${esc(ex.short)}</span>
-      <span class="big">${Math.round(latest)}</span>
-      <span class="sub">est. 1RM · ${delta >= 0 ? "+" : ""}${Math.round(delta)} ${unit()}</span>
-      ${sparkline(trend)}
-    </div>`;
-  }).join("");
-  const rows = h.map((w) => `
-    <li class="session">
+  const liftHistory = h.filter(isLift);
+  const tiles = Object.values(EXERCISES)
+    .map((ex) => ({ ex, trend: e1RMTrend(ex.id, liftHistory) }))
+    .filter((x) => x.trend.length)
+    .map(({ ex, trend }) => {
+      const latest = trend[trend.length - 1].value;
+      const delta = latest - trend[0].value;
+      return `<div class="e1">
+        <span class="label">${esc(ex.short)}</span>
+        <span class="big">${Math.round(latest)}</span>
+        <span class="sub">est. 1RM · ${delta >= 0 ? "+" : ""}${Math.round(delta)} ${unit()}</span>
+        ${sparkline(trend)}
+      </div>`;
+    }).join("");
+  const rows = h.map((w) => {
+    const lift = isLift(w);
+    const body = lift ? summaryText(w).split("\n").slice(1, -1).join("\n") : [activityLine(w), w.notes].filter(Boolean).join("\n");
+    return `
+    <li class="session ${lift ? "" : "act"}">
       <div class="when">
         <strong>${dateLabel(w.startedAt)}</strong>
-        <span>${w.dayName ? "Day " + esc(w.dayName) + " · " : ""}${durationSeconds(w) ? Math.round(durationSeconds(w) / 60) + " min" : ""}</span>
+        <span>${lift ? (w.dayName ? "Day " + esc(w.dayName) + " · " : "") + (durationSeconds(w) ? Math.round(durationSeconds(w) / 60) + " min" : "") : "Activity"}</span>
         ${w.example ? `<span class="pill">Example</span>` : ""}
       </div>
-      <pre>${esc(summaryText(w).split("\n").slice(1, -1).join("\n"))}</pre>
-    </li>`).join("");
+      <pre>${esc(body)}</pre>
+      <div class="tools">
+        <button class="link" data-action="session-open" data-id="${esc(w.id)}">Edit</button>
+        <a class="link" href="${smsHref(summaryText(w))}">Text</a>
+      </div>
+    </li>`;
+  }).join("");
   return `
     <section class="history">
       ${hasExamples ? `<p class="banner">Showing example sessions. Clear them in Settings before you start logging for real.</p>` : ""}
-      <h2>Strength trend</h2>
+      ${tiles ? `<h2>Strength trend</h2>
       <p class="note">Estimated one-rep max from your best set each session (reps plus reps in reserve, Epley formula).</p>
-      <div class="e1grid">${tiles}</div>
+      <div class="e1grid">${tiles}</div>` : ""}
       <h2>Sessions</h2>
       <ol class="sessions">${rows}</ol>
       ${backupBlock()}
+    </section>`;
+}
+
+function viewSession() {
+  const w = state.history.find((x) => x.id === state.sessionOpen);
+  if (!w) { state.sessionOpen = null; return viewHistory(); }
+  const lift = isLift(w);
+  const body = lift
+    ? w.entries.map((e) => `
+        <article class="lift">
+          <header><h3>${esc(EXERCISES[e.exerciseId]?.name ?? e.exerciseId)}</h3></header>
+          ${setList(w.id, e)}
+        </article>`).join("") || `<p class="note">No sets left in this session.</p>`
+    : `
+      <div class="row2">
+        <label class="field" for="se-min">Minutes
+          <input id="se-min" type="number" inputmode="numeric" value="${esc(w.activity.minutes)}" data-action="se-field" data-field="minutes"></label>
+        <label class="field" for="se-dist">Distance (mi)
+          <input id="se-dist" type="number" inputmode="decimal" step="0.1" value="${esc(w.activity.distance ?? "")}" data-action="se-field" data-field="distance"></label>
+      </div>
+      <div class="seg seg3" role="radiogroup" aria-label="Effort">
+        ${["easy", "moderate", "hard"].map((e) => `<button role="radio" aria-checked="${w.activity.effort === e}" class="${w.activity.effort === e ? "on" : ""}" data-action="se-effort" data-v="${e}">${e[0].toUpperCase() + e.slice(1)}</button>`).join("")}
+      </div>
+      <label class="field" for="se-notes">Notes
+        <textarea id="se-notes" rows="2" data-action="se-field" data-field="notes">${esc(w.notes)}</textarea></label>`;
+  return `
+    <section class="history">
+      <div class="dayhead">
+        <div>
+          <p class="label">Edit session</p>
+          <h2>${dateLabel(w.startedAt)}${lift && w.dayName ? " · Day " + esc(w.dayName) : ""}</h2>
+        </div>
+        <button class="primary" data-action="session-close">Done</button>
+      </div>
+      ${lift ? `<p class="note">Tap a set to fix or delete it. Next-session weights recalculate from your edits.</p>` : ""}
+      <div class="lifts">${body}</div>
+      <div class="discard">
+        ${state.confirmDeleteSession
+          ? `<span>Delete this whole session?</span>
+             <button class="danger" data-action="session-delete-yes">Delete</button>
+             <button class="ghost" data-action="session-delete-no">Keep</button>`
+          : `<button class="link" data-action="session-delete">Delete this session</button>`}
+      </div>
     </section>`;
 }
 
@@ -936,7 +1332,7 @@ function viewSettings() {
       <label class="field inline" for="bar">Bar weight
         <span class="inline-input"><input id="bar" type="number" inputmode="decimal" value="${s.barWeight}" data-action="bar"> lb</span></label>
       ${state.history.some((w) => w.example) ? `<button class="ghost" data-action="clear-examples">Clear example sessions</button>` : ""}
-      <p class="note">LiftLog stores everything on this device. Nothing is sent anywhere unless you tap Text this workout and send the message yourself.</p>
+      <p class="note">LiftLog stores everything on this device. Nothing is sent anywhere unless you tap Text and send the message yourself.</p>
     </section>`;
 }
 
@@ -951,7 +1347,8 @@ function render() {
       </nav>
     </header>
     <main>${state.view === "today" ? viewToday() : state.view === "history" ? viewHistory() : viewSettings()}</main>
-    <div id="toast" class="toast" role="status" ${state.toast ? "" : "hidden"}>${esc(state.toast)}</div>`;
+    <div id="toast" class="toast" role="status" hidden></div>`;
+  renderToast();
   tick();
 }
 
@@ -963,44 +1360,91 @@ function tick() {
   if (wc) wc.textContent = clock((Date.now() - a.startedAt) / 1000);
   if (a.restStart) {
     const sec = (Date.now() - a.restStart) / 1000;
-    const rc = $("#rest-clock"), fill = $("#rest-fill"), bar = $("#restbar");
-    const [lo, hi] = EXERCISES[a.restExercise]?.rest ?? [180, 300];
+    const rc = $("#rest-clock"), fill = $("#rest-fill"), barEl = $("#restbar");
+    const [lo, hi] = a.restWarm ? [60, 120] : EXERCISES[a.restExercise]?.rest ?? [180, 300];
     if (rc) rc.textContent = clock(sec);
     if (fill) fill.style.width = Math.min(100, (sec / hi) * 100) + "%";
-    if (bar) bar.dataset.zone = sec < lo ? "early" : sec <= hi ? "ready" : "long";
+    if (barEl) barEl.dataset.zone = sec < lo ? "early" : sec <= hi ? "ready" : "long";
   }
 }
 setInterval(tick, 1000);
 
 // ---------- Events ----------
+function stepValue(obj, field, delta) {
+  obj[field] = Math.max(0, Math.round(((Number(obj[field]) || 0) + Number(delta)) * 100) / 100);
+}
+
 document.addEventListener("click", async (ev) => {
   const t = ev.target.closest("[data-action]");
-  if (!t) return;
+  if (!t || t.tagName === "INPUT" || t.tagName === "TEXTAREA") return;
   const { action, id } = t.dataset;
   const a = state.active;
   switch (action) {
-    case "view": state.view = t.dataset.v; state.confirmDiscard = false; render(); break;
+    case "view":
+      state.view = t.dataset.v; state.confirmDiscard = false; state.sessionOpen = null; state.editing = null; render(); break;
     case "start": startWorkout(); break;
     case "toggle-free":
       state.freestyle = state.freestyle.includes(id) ? state.freestyle.filter((x) => x !== id) : [...state.freestyle, id];
       render(); break;
-    case "step": {
-      const d = a.drafts[id];
-      const f = t.dataset.field;
-      d[f] = Math.max(0, (Number(d[f]) || 0) + Number(t.dataset.delta));
-      persist(); render(); break;
-    }
-    case "rir": a.drafts[id].rir = Number(t.dataset.v); persist(); render(); break;
+
+    // live entry row
+    case "draft-step": stepValue(a.drafts[id], t.dataset.field, t.dataset.delta); persist(); render(); break;
+    case "draft-rir": a.drafts[id].rir = Number(t.dataset.v); persist(); render(); break;
     case "log": logSet(id); break;
+    case "log-warm": logWarmup(id, Number(t.dataset.i)); break;
     case "start-set": a.nextSetStartedAt = Date.now(); persist(); render(); break;
+    case "add-ex-open": state.addExerciseOpen = true; render(); break;
+    case "add-ex-close": state.addExerciseOpen = false; render(); break;
+    case "add-ex": addExercise(id); break;
+
+    // set editor
+    case "edit-set": openEditor(t.dataset.scope, id, Number(t.dataset.i)); break;
+    case "ed-step": stepValue(state.editDraft, t.dataset.field, t.dataset.delta); render(); break;
+    case "ed-rir": state.editDraft.rir = Number(t.dataset.v); render(); break;
+    case "ed-save": saveEdit(); break;
+    case "ed-cancel": state.editing = null; render(); break;
+    case "ed-delete": {
+      const { scope, exerciseId, index } = state.editing;
+      deleteSet(scope, exerciseId, index);
+      toast("Set deleted");
+      break;
+    }
+    case "toast-action": {
+      const fn = state.toast?.action;
+      state.toast = null; renderToast();
+      if (fn) { fn(); toast("Undone"); }
+      break;
+    }
+
     case "finish": finishWorkout(); break;
     case "discard": state.confirmDiscard = true; render(); break;
     case "discard-no": state.confirmDiscard = false; render(); break;
     case "discard-yes":
-      state.active = null; state.confirmDiscard = false; persist(); releaseWakeLock(); toast("Workout discarded"); render(); break;
+      state.active = null; state.confirmDiscard = false; state.editing = null; persist(); releaseWakeLock(); toast("Workout discarded"); render(); break;
     case "save": saveFinished(); break;
     case "copy-summary": copy($("#summary").value, "Summary copied", $("#summary")); break;
-    case "copy-backup": copy(JSON.stringify({ app: "LiftLog", version: 1, history: state.history, settings: state.settings }), "Backup copied"); break;
+
+    // activities
+    case "activity-open": state.activityForm = { type: "run", minutes: "", distance: "", effort: "moderate", notes: "" }; render(); break;
+    case "act-type": state.activityForm.type = t.dataset.v; render(); break;
+    case "act-effort": state.activityForm.effort = t.dataset.v; render(); break;
+    case "act-save": saveActivity(); break;
+    case "act-cancel": state.activityForm = null; render(); break;
+
+    // history session editor
+    case "session-open": state.sessionOpen = id; state.confirmDeleteSession = false; state.editing = null; render(); window.scrollTo(0, 0); break;
+    case "session-close": state.sessionOpen = null; state.editing = null; render(); break;
+    case "session-delete": state.confirmDeleteSession = true; render(); break;
+    case "session-delete-no": state.confirmDeleteSession = false; render(); break;
+    case "session-delete-yes":
+      state.history = state.history.filter((w) => w.id !== state.sessionOpen);
+      state.sessionOpen = null; state.confirmDeleteSession = false; persist(); toast("Session deleted"); render(); break;
+    case "se-effort": {
+      const w = state.history.find((x) => x.id === state.sessionOpen);
+      w.activity.effort = t.dataset.v; persist(); render(); break;
+    }
+
+    case "copy-backup": copy(JSON.stringify({ app: "LiftLog", version: 2, history: state.history, settings: state.settings }), "Backup copied"); break;
     case "toggle-restore": state.restoreOpen = !state.restoreOpen; render(); break;
     case "restore": restore($("#restore").value); break;
     case "load-examples": state.history = exampleHistory(); persist(); toast("Example sessions loaded"); render(); break;
@@ -1010,10 +1454,19 @@ document.addEventListener("click", async (ev) => {
 
 document.addEventListener("change", (ev) => {
   const t = ev.target;
-  const { action, id } = t.dataset;
-  if (action === "draft") { state.active.drafts[id][t.dataset.field] = Number(t.value); persist(); }
-  if (action === "warmup") { state.active.drafts[id].warmup = t.checked; persist(); render(); }
+  const { action, id, field } = t.dataset;
+  if (action === "draft-field") { state.active.drafts[id][field] = Number(t.value); persist(); }
+  if (action === "draft-warmup") { state.active.drafts[id].warmup = t.checked; persist(); render(); }
+  if (action === "ed-field") state.editDraft[field] = Number(t.value);
+  if (action === "ed-warmup") { state.editDraft.warmup = t.checked; render(); }
   if (action === "start-weight") state.startWeights[id] = t.value;
+  if (action === "act-field") state.activityForm[field] = t.value;
+  if (action === "se-field") {
+    const w = state.history.find((x) => x.id === state.sessionOpen);
+    if (field === "notes") w.notes = t.value;
+    else w.activity[field] = Number(t.value) || (field === "distance" ? null : w.activity[field]);
+    persist();
+  }
   if (action === "setting") {
     const v = t.value;
     state.settings[t.dataset.key] = isNaN(Number(v)) ? v : Number(v);
@@ -1038,15 +1491,15 @@ function restore(text) {
     state.history = data.history;
     if (data.settings) state.settings = { ...DEFAULT_SETTINGS, ...data.settings };
     state.restoreOpen = false;
-    persist(); toast(`Restored ${data.history.length} workouts`); render();
+    persist(); toast(`Restored ${data.history.length} sessions`); render();
   } catch { toast("That isn't a LiftLog backup. Paste the full text from Copy backup."); }
 }
 
-// Example data: three weeks of a plausible A/B progression, marked example:true.
+// Example data: ten sessions of a plausible A/B progression plus two activities, marked example:true.
 function exampleHistory() {
   const out = [];
   const day = 172_800_000;
-  const start = Date.now() - 10 * day;   // ten sessions, every other day, ending two days ago
+  const start = Date.now() - 10 * day;   // every other day, ending two days ago
   const w = { squat: 185, bench: 145, deadlift: 225, ohp: 95, power_clean: 115 };
   const add = { squat: 5, bench: 5, deadlift: 10, ohp: 5, power_clean: 5 };
   for (let i = 0; i < 10; i++) {
@@ -1056,6 +1509,10 @@ function exampleHistory() {
     let t = s0;
     const entries = slots.map((sl) => {
       const sets = [];
+      for (const wu of warmupSets(EXERCISES[sl.exerciseId], w[sl.exerciseId])) {
+        t += 90_000;
+        sets.push({ weight: wu.weight, reps: wu.reps, targetReps: wu.reps, rir: null, warmup: true, startedAt: null, completedAt: t });
+      }
       for (let k = 0; k < sl.sets; k++) {
         t += 210_000;
         const missed = sl.exerciseId === "ohp" && i === 9 && k === 2;
@@ -1065,8 +1522,14 @@ function exampleHistory() {
       return { exerciseId: sl.exerciseId, sets };
     });
     for (const sl of slots) if (!(sl.exerciseId === "ohp" && i === 9)) w[sl.exerciseId] += add[sl.exerciseId];
-    out.push({ id: "ex" + i, dayName, startedAt: s0, endedAt: t + 120_000, unit: "lb", entries, notes: "", example: true });
+    out.push({ id: "ex" + i, kind: "lift", dayName, startedAt: s0, endedAt: t + 120_000, unit: "lb", entries, notes: "", example: true });
   }
+  const act = (offset, type, minutes, distance, effort, notes) => ({
+    id: "exa" + offset, kind: "activity", dayName: "", startedAt: start + offset * 86_400_000, endedAt: start + offset * 86_400_000 + minutes * 60_000,
+    unit: "lb", entries: [], notes, example: true, activity: { type, minutes, distance, distanceUnit: "mi", effort },
+  });
+  out.push(act(5, "throws", 45, null, "moderate", "Stone and weight-for-distance, 12 throws each"));
+  out.push(act(13, "bike", 30, 8, "easy", ""));
   return out;
 }
 
