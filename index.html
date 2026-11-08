@@ -8,52 +8,55 @@
 <meta name="apple-mobile-web-app-title" content="LiftLog">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script>try{var s=JSON.parse(localStorage.getItem("liftlog.settings")||"{}");document.documentElement.dataset.theme=s.theme==="light"?"light":"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
 </head>
 <body>
 <title>LiftLog</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="theme-color" content="#F2F3EF">
+<meta name="theme-color" content="#0E0F11">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
 <style>
-/* Layout: one narrow column like a gym logbook; numbers set big in a condensed face, like plate stamps. */
+/* Dark, high-contrast gym look: one orange action color, blue for "ready", big condensed numbers.
+   Dark is the default; Settings → Appearance sets data-theme="light". */
 :root {
-  --bg: #F2F3EF;          /* chalk */
-  --surface: #FFFFFF;
-  --ink: #1B201E;         /* iron */
-  --muted: #5B6560;
-  --line: #D9DDD7;
-  --accent: #6C3A8A;      /* thistle */
-  --accent-ink: #FFFFFF;
-  --accent-soft: rgba(108, 58, 138, 0.12);
-  --good: #2D7A4C;
-  --warn: #9A620F;
-  --bad: #B03636;
+  --bg: #0E0F11;
+  --surface: #1A1C20;
+  --surface-2: #24272C;
+  --ink: #F4F4F2;
+  --muted: #A3A7AE;
+  --line: #2C2F35;
+  --accent: #FF8A1F;          /* action fill */
+  --accent-ink: #141414;      /* text on the action fill */
+  --accent-text: #FFB066;     /* accent used as text */
+  --accent-soft: #3A2410;
+  --ready: #5AB0FF;           /* ready / in-zone (blue, colorblind-safe next to orange) */
+  --ready-ink: #DCEEFF;
+  --ready-soft: #13263A;
+  --good: #5AB0FF;
+  --warn: #E0AA4E;
+  --bad: #EC7B7B;
   --font-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
-  --font-body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --r: 10px;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --r: 16px;
+  --nav-h: 64px;
+  color-scheme: dark;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #111412; --surface: #1A1E1C; --ink: #E8EBE7; --muted: #9AA39E; --line: #2B312E;
-    --accent: #BF94DB; --accent-ink: #1A1020; --accent-soft: rgba(191, 148, 219, 0.16);
-    --good: #6CC38F; --warn: #E0AA4E; --bad: #EC7B7B; color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #111412; --surface: #1A1E1C; --ink: #E8EBE7; --muted: #9AA39E; --line: #2B312E;
-  --accent: #BF94DB; --accent-ink: #1A1020; --accent-soft: rgba(191, 148, 219, 0.16);
-  --good: #6CC38F; --warn: #E0AA4E; --bad: #EC7B7B; color-scheme: dark;
+:root[data-theme="light"] {
+  --bg: #F4F4F1; --surface: #FFFFFF; --surface-2: #ECEDEF; --ink: #141414; --muted: #5D6168; --line: #E0E2E6;
+  --accent: #FF8A1F; --accent-ink: #141414; --accent-text: #B85400; --accent-soft: #FFE8D2;
+  --ready: #0B5CA3; --ready-ink: #0A3A66; --ready-soft: #E3F0FC;
+  --good: #0B5CA3; --warn: #9A620F; --bad: #B03636; color-scheme: light;
 }
 
 * { box-sizing: border-box; }
 html, body { background: var(--bg); }
 body { color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.45; }
-#app { max-width: 560px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 140px; }
+#app { max-width: 560px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 calc(var(--nav-h) + 150px + env(safe-area-inset-bottom, 0px)); }
 h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; letter-spacing: 0.01em; }
-h2 { font-size: 1.9rem; line-height: 1.05; }
+h2 { font-size: 2rem; line-height: 1.05; }
 h3 { font-size: 1.3rem; line-height: 1.1; }
 p { margin: 0; }
 button, input, textarea { font: inherit; color: inherit; }
@@ -66,42 +69,49 @@ button { cursor: pointer; }
 
 /* Header */
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
-.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 14px 10px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
-.brand { font-family: var(--font-display); font-weight: 700; font-size: 1.45rem; letter-spacing: 0.02em; display: flex; align-items: center; gap: 8px; }
-.mark { width: 22px; height: 22px; border-radius: 50%; border: 5px solid var(--ink); box-shadow: inset 0 0 0 3px var(--bg), inset 0 0 0 6px var(--accent); }
-.tabs { display: flex; gap: 2px; background: var(--line); padding: 3px; border-radius: 999px; }
-.tabs button { border: 0; background: transparent; padding: 6px 13px; border-radius: 999px; font-weight: 500; font-size: 0.92rem; color: var(--muted); }
-.tabs button.on { background: var(--surface); color: var(--ink); }
+.top { padding-block: 14px 0; }
+.brand { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.mark { width: 16px; height: 16px; border-radius: 50%; border: 4px solid var(--ink); box-shadow: inset 0 0 0 2px var(--bg), inset 0 0 0 5px var(--accent); }
+/* Bottom tab bar: within thumb reach */
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 7; background: var(--surface); border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.tabs button { border: 0; background: transparent; min-height: var(--nav-h); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-weight: 500; font-size: 0.75rem; color: var(--muted); }
+.tabs button svg { width: 24px; height: 24px; }
+.tabs button.on { color: var(--accent-text); font-weight: 600; }
 
-main > section { display: flex; flex-direction: column; gap: 18px; padding-top: 20px; }
+main > section { display: flex; flex-direction: column; gap: 16px; padding-top: 12px; }
 .dayhead { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.dayhead h2 { font-size: 2.6rem; }
+.dayhead h2 { font-size: 2.75rem; line-height: 1; }
+.sub { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
 .clock { font-variant-numeric: tabular-nums; }
 
 /* Lift cards */
 .lifts { display: flex; flex-direction: column; gap: 12px; }
-.lift { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.lift { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .lift header { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .lift header h3 { margin-right: auto; }
 .scheme { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
 .count { font-family: var(--font-display); font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
 .lift.done .count { color: var(--good); }
 .target { display: flex; align-items: baseline; }
-.plates { font-family: var(--font-display); font-size: 1rem; color: var(--muted); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
-.why { font-size: 0.95rem; }
-.rest { font-size: 0.85rem; color: var(--muted); }
-.pill { font-family: var(--font-display); font-weight: 600; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.target .big { font-size: 2.6rem; }
+.plates { font-size: 0.9rem; color: var(--ink); opacity: 0.85; font-variant-numeric: tabular-nums; }
+.why { font-size: 0.88rem; color: var(--muted); }
+.why strong { color: var(--accent-text); font-weight: 600; }
+.why strong.same { color: var(--ink); }
+.rest { font-size: 0.82rem; color: var(--muted); }
+.pill { font-family: var(--font-display); font-weight: 600; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-text); }
 .pill.warn { background: color-mix(in srgb, var(--warn) 16%, transparent); color: var(--warn); }
 .pill.bad { background: color-mix(in srgb, var(--bad) 14%, transparent); color: var(--bad); }
 .startw { display: flex; align-items: center; gap: 10px; font-weight: 500; flex-wrap: wrap; }
 .inline-input { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
 .inline-input input { width: 6.5em; }
-input[type="number"], textarea { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-variant-numeric: tabular-nums; min-width: 0; }
+input[type="number"], textarea { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-variant-numeric: tabular-nums; min-width: 0; }
 textarea { width: 100%; resize: vertical; font-family: var(--font-body); line-height: 1.5; }
 
 /* Buttons */
-.primary, .ghost, .danger { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 999px; padding: 11px 20px; font-weight: 600; text-decoration: none; border: 1px solid transparent; min-height: 44px; }
+.primary, .ghost, .danger { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 14px; padding: 11px 20px; font-weight: 600; text-decoration: none; border: 1px solid transparent; min-height: 48px; }
 .primary { background: var(--accent); color: var(--accent-ink); }
+.primary.wide, .primary.big-btn { min-height: 64px; border-radius: 16px; font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; letter-spacing: 0.02em; }
 .ghost { background: transparent; border-color: var(--line); color: var(--ink); }
 .ghost.small { min-height: 36px; padding: 6px 14px; font-size: 0.9rem; }
 .danger { background: var(--bad); color: #fff; }
@@ -123,7 +133,7 @@ button:disabled { opacity: 0.5; cursor: default; }
 .setrow .n { font-family: var(--font-display); font-weight: 600; color: var(--muted); }
 .setrow .wr { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
 .setrow .rir, .setrow .rs { font-size: 0.85rem; color: var(--muted); }
-.setrow .pen { font-size: 0.78rem; color: var(--accent); font-weight: 600; }
+.setrow .pen { font-size: 0.78rem; color: var(--accent-text); font-weight: 600; }
 .setrow.hit .n { color: var(--good); }
 .setrow.miss .n { color: var(--bad); }
 .setrow.wu { opacity: 0.75; }
@@ -135,9 +145,10 @@ button:disabled { opacity: 0.5; cursor: default; }
 .wchip { border: 1px dashed var(--muted); background: var(--bg); border-radius: 8px; padding: 8px 12px; min-height: 40px; font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
 .wchip.done { border-style: solid; border-color: var(--good); color: var(--good); background: transparent; opacity: 1; }
 .wline { font-family: var(--font-display); font-size: 0.98rem; color: var(--muted); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
-.recov { border-radius: var(--r); padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--line); background: var(--surface); }
-.recov.ok { border-color: color-mix(in srgb, var(--good) 45%, var(--line)); }
-.recov.ok strong { color: var(--good); }
+.recov { border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--line); background: var(--surface); }
+.recov.ok { background: var(--ready-soft); border-color: transparent; color: var(--ready-ink); }
+.recov.ok strong { color: var(--ready-ink); }
+.recov.ok .note { color: var(--ready-ink); opacity: 0.85; }
 .recov.wait { border-color: color-mix(in srgb, var(--warn) 45%, var(--line)); }
 .recov.wait strong { color: var(--warn); }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -148,33 +159,38 @@ button:disabled { opacity: 0.5; cursor: default; }
 .actform textarea, .history textarea { color: var(--ink); }
 .history .field { font-size: 0.82rem; color: var(--muted); font-weight: 500; }
 .session .tools { display: flex; gap: 16px; }
-.session .tools .link { font-size: 0.9rem; color: var(--accent); min-height: 32px; display: inline-flex; align-items: center; }
+.session .tools .link { font-size: 0.9rem; color: var(--accent-text); min-height: 32px; display: inline-flex; align-items: center; }
 .session.act pre { color: var(--muted); }
 .entry { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: end; margin-top: 4px; }
 .field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .field > label, .flabel { font-size: 0.82rem; color: var(--muted); font-weight: 500; }
 .field.inline { flex-direction: row; align-items: center; gap: 12px; }
 .rirfield { grid-column: 1 / -1; }
-.stepper { display: grid; grid-template-columns: 40px 1fr 40px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--bg); }
-.stepper button { border: 0; background: transparent; font-size: 1.3rem; min-height: 44px; }
-.stepper input { border: 0; border-radius: 0; text-align: center; font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; width: 100%; padding: 6px 0; }
-.seg { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
-.seg button { border: 0; border-right: 1px solid var(--line); background: var(--bg); min-height: 42px; font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
-.seg button:last-child { border-right: 0; }
-.seg button.on { background: var(--accent); color: var(--accent-ink); }
+.stepper { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; align-items: center; gap: 4px; border-radius: 16px; background: var(--bg); padding: 6px; }
+.stepper button { border: 0; background: var(--surface-2); border-radius: 50%; width: 56px; height: 56px; font-size: 1.7rem; font-weight: 600; }
+.stepper input { border: 0; border-radius: 0; background: transparent; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: 2.4rem; width: 100%; padding: 4px 0; }
+/* Live entry: each control gets the full width so numbers read at arm's length */
+.entry > .field, .entry > .wu-toggle, .entry > .primary { grid-column: 1 / -1; }
+.entry > .primary { min-height: 64px; border-radius: 16px; font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; }
+.seg { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.seg button { border: 2px solid transparent; border-radius: 12px; background: var(--bg); min-height: 52px; font-family: var(--font-display); font-weight: 700; font-size: 1.4rem; }
+.seg button.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-text); }
+.seg.seg2 { grid-template-columns: repeat(2, 1fr); background: var(--surface); padding: 4px; border-radius: 14px; gap: 4px; }
+.seg.seg2 button { font-family: var(--font-body); font-size: 1rem; font-weight: 600; min-height: 48px; border: 0; background: transparent; color: var(--ink); display: flex; align-items: center; justify-content: center; gap: 8px; }
+.seg.seg2 button.on { background: var(--accent-soft); color: var(--accent-text); }
 .wu-toggle { display: flex; align-items: center; gap: 8px; font-size: 0.92rem; color: var(--muted); }
 .wu-toggle input { width: 18px; height: 18px; accent-color: var(--accent); }
 .discard { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.92rem; }
 
 /* Rest bar */
-.restbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--surface); border-top: 1px solid var(--line); padding-block: 12px calc(12px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; align-items: center; }
+.restbar { position: fixed; left: 0; right: 0; bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px)); z-index: 6; background: var(--surface); border-top: 1px solid var(--line); padding-block: 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; align-items: center; }
 .restinfo { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; min-width: 0; }
-.restinfo .clock { font-family: var(--font-display); font-weight: 700; font-size: 1.8rem; line-height: 1; }
+.restinfo .clock { font-family: var(--font-display); font-weight: 700; font-size: 2.6rem; line-height: 1; }
 .restinfo .range { font-size: 0.85rem; color: var(--muted); }
-.restmeter { grid-column: 1 / -1; grid-row: 2; height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; }
-.restmeter div { height: 100%; width: 0; background: var(--muted); transition: width 0.9s linear; }
-.restbar[data-zone="ready"] .restmeter div { background: var(--good); }
-.restbar[data-zone="ready"] .clock { color: var(--good); }
+.restmeter { grid-column: 1 / -1; grid-row: 2; height: 10px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
+.restmeter div { height: 100%; width: 0; background: var(--accent); transition: width 0.9s linear; }
+.restbar[data-zone="ready"] .restmeter div { background: var(--ready); }
+.restbar[data-zone="ready"] .clock { color: var(--ready); }
 .restbar[data-zone="long"] .restmeter div { background: var(--warn); }
 .restbar[data-zone="long"] .clock { color: var(--warn); }
 
@@ -208,7 +224,7 @@ button:disabled { opacity: 0.5; cursor: default; }
 .switch { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-weight: 500; }
 .switch input { width: 18px; height: 18px; accent-color: var(--accent); }
 
-.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(110px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 8px 8px 8px 16px; border-radius: 999px; font-size: 0.92rem; z-index: 20; max-width: calc(100% - 32px); display: flex; align-items: center; gap: 12px; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(var(--nav-h) + 120px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 8px 8px 8px 16px; border-radius: 999px; font-size: 0.92rem; z-index: 20; max-width: calc(100% - 32px); display: flex; align-items: center; gap: 12px; }
 .toast:not(:has(button)) { padding-right: 16px; }
 .toast button { background: var(--bg); color: var(--ink); border: 0; border-radius: 999px; padding: 6px 14px; font-weight: 600; min-height: 36px; }
 
@@ -252,6 +268,7 @@ const DEFAULT_SETTINGS = {
   trainingAge: "novice",      // "novice" | "intermediate"
   followProgram: true,        // false = freestyle
   barWeight: 45,
+  theme: "dark",              // "dark" | "light"
 };
 
 // ---------- Logged-data helpers ----------
@@ -343,6 +360,10 @@ const PROGRAMS = {
       "Once per-session progress stops, varying stress across the week and progressing week to week keeps strength moving while managing fatigue.",
   },
 };
+
+// Workouts are shown by focus rather than letter; stored dayName stays "A"/"B" so old history keeps working.
+const DAY_TITLES = { A: "Bench & Deadlift", B: "Clean & Press" };
+const dayTitle = (dayName) => DAY_TITLES[dayName] ?? dayName;
 
 function recommendProgram(goal, trainingAge) {
   if (trainingAge === "intermediate") return PROGRAMS["hlm-4wk"];
@@ -585,7 +606,7 @@ function summaryText(workout, nextUp = []) {
   }
   const unit = workout.unit;
   const lines = [];
-  let header = workout.dayName ? `💪 Workout ${workout.dayName}` : "💪 Workout";
+  let header = workout.dayName ? `💪 ${dayTitle(workout.dayName)}` : "💪 Workout";
   const d = durationSeconds(workout);
   if (d !== null) header += ` · ${Math.round(d / 60)} min`;
   lines.push(header);
@@ -1017,17 +1038,18 @@ function viewToday() {
 
   return `
     <section class="today">
-      ${recoveryBanner()}
       <div class="dayhead">
         <div>
-          <p class="label">${state.settings.followProgram ? esc(prog.name) : "Freestyle"}</p>
-          <h2>${dayName ? "Day " + esc(dayName) : "Today"}</h2>
+          <p class="label">Your next workout</p>
+          <h2>${dayName ? esc(dayTitle(dayName)) : "Freestyle"}</h2>
+          <p class="sub">${state.settings.followProgram ? esc(prog.name) : "Your pick of lifts"} · ${last ? "last lift " + dateLabel(last.startedAt) : "no sessions logged yet"}</p>
         </div>
-        <p class="meta">${last ? "Last lift " + dateLabel(last.startedAt) : "No sessions logged yet"}</p>
       </div>
+      ${recoveryBanner()}
       ${freestylePicker}
       <div class="lifts">${cards || `<p class="empty">Pick at least one lift above.</p>`}</div>
-      <button class="primary wide" data-action="start">Start workout</button>
+      <p class="note" style="text-align:center">Warm-up sets are suggested for each lift once you start.</p>
+      <button class="primary wide" data-action="start">Start ${dayName ? esc(dayTitle(dayName)) : "workout"}</button>
       <button class="ghost wide" data-action="activity-open">Log cardio or other training</button>
     </section>`;
 }
@@ -1082,7 +1104,7 @@ function viewActive() {
     <section class="active">
       <div class="dayhead">
         <div>
-          <p class="label">In progress${a.dayName ? " · Day " + esc(a.dayName) : ""}</p>
+          <p class="label">In progress${a.dayName ? " · " + esc(dayTitle(a.dayName)) : ""}</p>
           <h2 class="clock" id="workout-clock">${clock((Date.now() - a.startedAt) / 1000)}</h2>
         </div>
         <button class="ghost" data-action="finish">Finish</button>
@@ -1134,7 +1156,7 @@ function viewActivityForm() {
       </div>
       <label class="field" for="act-notes">Notes (optional)
         <textarea id="act-notes" rows="2" placeholder="e.g. 10 stone throws, 6 caber picks" data-action="act-field" data-field="notes">${esc(f.notes)}</textarea></label>
-      <p class="note">Activities show in History but don't change your lifting rotation. Hard cardio on a lifting day gets flagged on Today.</p>
+      <p class="note">Activities show in History but don't change your lifting rotation. Hard cardio on a lifting day gets flagged on Your next workout.</p>
       <div class="actions">
         <button class="primary" data-action="act-save">Save activity</button>
         <button class="ghost" data-action="act-cancel">Cancel</button>
@@ -1215,7 +1237,7 @@ function viewHistory() {
     <li class="session ${lift ? "" : "act"}">
       <div class="when">
         <strong>${dateLabel(w.startedAt)}</strong>
-        <span>${lift ? (w.dayName ? "Day " + esc(w.dayName) + " · " : "") + (durationSeconds(w) ? Math.round(durationSeconds(w) / 60) + " min" : "") : "Activity"}</span>
+        <span>${lift ? (w.dayName ? esc(dayTitle(w.dayName)) + " · " : "") + (durationSeconds(w) ? Math.round(durationSeconds(w) / 60) + " min" : "") : "Activity"}</span>
         ${w.example ? `<span class="pill">Example</span>` : ""}
       </div>
       <pre>${esc(body)}</pre>
@@ -1264,7 +1286,7 @@ function viewSession() {
       <div class="dayhead">
         <div>
           <p class="label">Edit session</p>
-          <h2>${dateLabel(w.startedAt)}${lift && w.dayName ? " · Day " + esc(w.dayName) : ""}</h2>
+          <h2>${dateLabel(w.startedAt)}${lift && w.dayName ? " · " + esc(dayTitle(w.dayName)) : ""}</h2>
         </div>
         <button class="primary" data-action="session-close">Done</button>
       </div>
@@ -1304,12 +1326,19 @@ function viewSettings() {
       <input type="radio" id="${name}-${value}" name="${name}" value="${value}" ${s[name] === value ? "checked" : ""} data-action="setting" data-key="${name}">
       <span><strong>${label}</strong>${hint ? `<small>${hint}</small>` : ""}</span>
     </label>`;
+  const themeBtn = (v, label, icon) => `
+    <button class="${s.theme === v ? "on" : ""}" aria-pressed="${s.theme === v}" data-action="theme" data-v="${v}">${icon}${label}</button>`;
   return `
     <section class="settings">
+      <h2>Appearance</h2>
+      <div class="seg seg2" role="group" aria-label="Theme">
+        ${themeBtn("dark", "Dark", `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>`)}
+        ${themeBtn("light", "Light", `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>`)}
+      </div>
       <h2>Goal</h2>
       <div class="opts">
         ${radio("goal", "strength", "Strength", "Heavy compound lifts, 1–6 reps")}
-        ${radio("goal", "strengthAndPower", "Strength + power", "Explosive lift first on day B")}
+        ${radio("goal", "strengthAndPower", "Strength + power", "Explosive lift first on Clean & Press day")}
       </div>
       <h2>Stage</h2>
       <div class="opts">
@@ -1337,15 +1366,28 @@ function viewSettings() {
 }
 
 // ---------- Render ----------
+const TAB_ICONS = {
+  today: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/></svg>`,
+  history: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>`,
+  settings: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>`,
+};
+
+function applyTheme() {
+  const theme = state.settings.theme === "light" ? "light" : "dark";
+  document.documentElement.dataset.theme = theme;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "light" ? "#F4F4F1" : "#0E0F11");
+}
+
 function render() {
-  const tabs = [["today", state.active ? "Workout" : "Today"], ["history", "History"], ["settings", "Settings"]];
+  applyTheme();
+  const tabs = [["today", state.active ? "Workout" : "Next", "Your next workout"], ["history", "History", ""], ["settings", "Settings", ""]];
   $("#app").innerHTML = `
     <header class="top">
       <div class="brand"><span class="mark" aria-hidden="true"></span>LiftLog</div>
-      <nav class="tabs" aria-label="Sections">
-        ${tabs.map(([v, l]) => `<button class="${state.view === v ? "on" : ""}" aria-current="${state.view === v ? "page" : "false"}" data-action="view" data-v="${v}">${l}</button>`).join("")}
-      </nav>
     </header>
+    <nav class="tabs" aria-label="Sections">
+      ${tabs.map(([v, l, aria]) => `<button class="${state.view === v ? "on" : ""}" aria-current="${state.view === v ? "page" : "false"}" ${aria && !state.active ? `aria-label="${aria}"` : ""} data-action="view" data-v="${v}">${TAB_ICONS[v]}${l}</button>`).join("")}
+    </nav>
     <main>${state.view === "today" ? viewToday() : state.view === "history" ? viewHistory() : viewSettings()}</main>
     <div id="toast" class="toast" role="status" hidden></div>`;
   renderToast();
@@ -1445,6 +1487,7 @@ document.addEventListener("click", async (ev) => {
     }
 
     case "copy-backup": copy(JSON.stringify({ app: "LiftLog", version: 2, history: state.history, settings: state.settings }), "Backup copied"); break;
+    case "theme": state.settings.theme = t.dataset.v === "light" ? "light" : "dark"; persist(); render(); break;
     case "toggle-restore": state.restoreOpen = !state.restoreOpen; render(); break;
     case "restore": restore($("#restore").value); break;
     case "load-examples": state.history = exampleHistory(); persist(); toast("Example sessions loaded"); render(); break;
